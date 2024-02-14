@@ -13,28 +13,36 @@ requests package
 from multiprocessing import Pool
 import os
 import requests
-import psutil
 from pyarrow import parquet as pq
-import time
+from urllib.parse import urlparse
 
-def download_image(args):
-    link, i = args
-    print(i)
-    # Check if image already exists
-    if not os.path.exists(f'./data/image_{i}.jpg'):
+
+
+def download_image(self,i):
+    # Retrieve the link
+    link  = self.links_list[i]
+    # Create the image path in the download dir
+    image_path = os.path.join(self.download_path,f'image_{i}')
+    if not os.path.exists(image_path):
         try:
+            # Extract file extension from the URL
+            parsed_url = urlparse(link)
+            _, extension = os.path.splitext(parsed_url.path)
             # Download image
-            response = requests.get(link).content
-            # Save image
+            response = requests.get(link)
+            if extension:
+                # Save image with appropriate extension
+                with open(f'./data/image_{i}{extension}', 'wb') as f:
+                    f.write(response.content)
+            # If extension detection fails, save as .jpg
             with open(f'./data/image_{i}.jpg', 'wb') as f:
-                f.write(response)
+                f.write(response.content)
+            image_path = os.path.join(self.download_path,f'image_{i}{extension}')
         except Exception as e:
-            pass
-
-        print(f'Image {i} downloaded')
-        print(f'CPU usage: {psutil.cpu_percent()}')
-        print(f'Network usage: {psutil.net_io_counters()}')
-        
+            print("Error: ",e)
+            print(f"{i} not retrievable")
+            return None
+    return image_path
             
 def process_images(p_file, images_len):
     # Read the parquet file
