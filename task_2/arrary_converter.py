@@ -1,9 +1,11 @@
 import numpy as np
 import time
 
+
 def convert_array_to_bytes(arr):
     """Convert a numpy array to bytes."""
     return arr.tobytes()
+
 
 def convert_bytes_to_array(byte_array, shape, dtype):
     """Convert bytes back to a numpy array."""
