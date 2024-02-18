@@ -35,24 +35,26 @@ class Downloader:
         # Create the image path in the download dir
         image_path = os.path.join(self.download_path,f'image_{i}')
         if not os.path.exists(image_path):
-            try:
+            #try:
                 # Extract file extension from the URL
                 parsed_url = urlparse(link)
                 _, extension = os.path.splitext(parsed_url.path)
                 # Download image
                 response = requests.get(link)
+                print("RESPONSE: ",response.content)
                 if extension:
+
                     # Save image with appropriate extension
-                    with open(f'./data/image_{i}{extension}', 'wb') as f:
+                    with open(f'{self.download_path}/image_{i}{extension}', 'wb') as f:
                         f.write(response.content)
                 # If extension detection fails, save as .jpg
-                with open(f'./data/image_{i}.jpg', 'wb') as f:
+                with open(f'{self.download_path}/image_{i}.jpg', 'wb') as f:
                     f.write(response.content)
                 image_path = os.path.join(self.download_path,f'image_{i}{extension}')
-            except Exception as e:
-                print("Error: ",e)
-                print(f"{i} not retrievable")
-                return None
+            # except Exception as e:
+            #     print("Error: ",e)
+            #     print(f"{i} not retrievable")
+            #     return None
         return image_path
 
     def __getitem__(self, key):
