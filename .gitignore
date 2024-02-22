@@ -4,3 +4,4 @@ task_6/dataset/*
 task_5/data/*
 task_6/dataset/*
 task_6/data/*
+*/__pycache__/*
